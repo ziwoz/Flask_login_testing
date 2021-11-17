@@ -2,17 +2,15 @@ import os
 
 from flask import Flask, render_template_string
 from flask.templating import render_template
-from flask_mongoengine import MongoEngine
+
 from flask_security import (
     Security,
     MongoEngineUserDatastore,
-    UserMixin,
-    RoleMixin,
     auth_required,
     hash_password,
 )
 
-# Create app
+
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -31,32 +29,17 @@ app.config["MONGODB_DB"] = "mydatabase"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
 
-# Create database connection object
-db = MongoEngine(app)
+# below import should be done only after the "app" initialization
+from database import db
 
-# from models.user import User, Role
-
-
-class Role(db.Document, RoleMixin):
-    name = db.StringField(max_length=80, unique=True)
-    description = db.StringField(max_length=255)
-    permissions = db.StringField(max_length=255)
+from models.user.user import User, Role, ExtendedLoginForm
 
 
-class User(db.Document, UserMixin):
-    email = db.StringField(max_length=255, unique=True)
-    password = db.StringField(max_length=255)
-    active = db.BooleanField(default=True)
-    fs_uniquifier = db.StringField(max_length=64, unique=True)
-    confirmed_at = db.DateTimeField()
-    roles = db.ListField(db.ReferenceField(Role), default=[])
-
-
-# Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
-security = Security(app, user_datastore)
+# security = Security(app, user_datastore)
+security = Security(app, user_datastore, login_form=ExtendedLoginForm)
 
-# Create a user to test with
+
 @app.before_first_request
 def create_user():
     if not user_datastore.find_user(email="test@me.com"):
@@ -65,11 +48,15 @@ def create_user():
         )
 
 
-# Views
+# @app.route("/login")
+# # @auth_required()
+# def login_page():
+#     return "Podde"
+
+
 @app.route("/")
 @auth_required()
 def home():
-    # return render_template_string("Hello {{ current_user.email }}")
     return render_template("index.html")
 
 

@@ -1,0 +1,25 @@
+.nav-link {
+    color: black;
+    margin-right: 20px;
+}
+
+#notes {
+    margin: auto;
+}
+
+form {
+    padding: 20px;
+    border-radius: 15px;
+}
+
+div.jumbotron {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 1px;
+    padding-top: 1px;
+}

@@ -1,0 +1,131 @@
+{% macro form_field(field) %}
+
+
+        <div class="form-group">
+
+            <label class="control-label">{{ field.label.text }}</label>
+
+            <div>
+
+            {% if field.type == 'FormField' %}
+                {% for subfield in field %}
+                    <div class='row' style="margin-left: 30px; margin-right: 30px">
+
+                        <div class='col'>
+                            <label class="control-label">{{ subfield.label.text }}</label>
+                        </div>
+
+                        <div class='col'>
+                            {% if subfield.type == 'DateField' %}
+                                {{ subfield(class_='table table-sm',type='date', **kwargs, )|safe }}
+                            {% else %}
+                                {{ subfield(class_='table table-sm', **kwargs)|safe }}
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+            {% elif field.type == 'FieldList' %}
+
+                {% for subfield in field %}
+                    {{ form_field(subfield) }}
+                {% endfor %}
+
+
+
+            {% else %}
+                {{ field(class_='form-control', **kwargs)|safe }}
+            {% endif %}
+
+            </div>
+
+            {% for error in field.errors %}
+                <li style="color: red;">{{ error }}</li>
+            {% endfor %}
+        </div>
+
+{% endmacro %}
+
+{% macro form_submit(text, form_name) %}
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button  type="submit" class="btn btn-secondary btn-sm" id={{ form_name }}_submit >{{text}}</button>
+        </div>
+    </div>
+
+{% endmacro %}
+
+
+{% macro form_delete(text, href) %}
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a class="btn btn-danger btn-sm" href={{ href }} type="button">{{text}}</a>
+        </div>
+    </div>
+
+{% endmacro %}
+
+{% macro form_macro(form, action, form_name, enctype=None) %}
+
+    <div class="card shadow" style="border-radius: 15px" id="{{ form_name }}_form_div">
+        <form action="{{ action }}" method="post" {% if enctype %} enctype="{{enctype}}" {% endif %}>
+
+            {% for field in form %}
+                {% if field.type == 'CSRFTokenField'%}
+                    {{ form.csrf_token }}
+                {% else %}
+                    {{ form_field(field) }}
+                {% endif %}
+            {% endfor %}
+                {{ form_submit(text='submit', form_name=form_name ) }}
+
+        </form>
+    </div>
+{% endmacro %}
+
+{% macro modal_form_add_edit(name, url, button_label='Add', error_form=None) %}
+
+    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#{{ name }}" id="{{ name }}_button">{{ button_label }}</button>
+
+    <div class="modal fade" id="{{ name }}" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="{{ name }}_form_div">
+                            {% if error_form %}
+                                {{ form_macro(error_form) }}
+                                <script>
+                                $(document).ready(function() {
+                                    $("#{{ name }}").modal('show');
+                                    });
+                                    
+                                </script>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <script>
+    function ajax_modal_form(url) {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'html',
+            })
+            .done(function (data) {
+                $("#{{ name }}").modal({show: true});
+                $("#{{ name }}_form_div").replaceWith(data);
+                {# console.log(data) #}
+            });
+        }
+        $("#{{ name }}_button").on('click', function() {
+            ajax_modal_form('{{ url }}');
+        });
+    </script>
+
+{% endmacro %}

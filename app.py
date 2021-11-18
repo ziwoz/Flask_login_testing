@@ -3,6 +3,8 @@ import os
 from flask import Flask, render_template_string
 from flask.templating import render_template
 
+from flask_security.forms import LoginForm
+
 from flask_security import (
     Security,
     MongoEngineUserDatastore,
@@ -28,16 +30,24 @@ app.config["SECURITY_PASSWORD_SALT"] = os.environ.get(
 app.config["MONGODB_DB"] = "mydatabase"
 app.config["MONGODB_HOST"] = "localhost"
 app.config["MONGODB_PORT"] = 27017
+# app.config["SECURITY_USER_IDENTITY_ATTRIBUTES"] = ("username", "email")
 
 # below import should be done only after the "app" initialization
 from database import db
 
 from models.user.user import User, Role, ExtendedLoginForm
 
+# from models.user.user import User, Role
+
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 # security = Security(app, user_datastore)
-security = Security(app, user_datastore, login_form=ExtendedLoginForm)
+security = Security(app, user_datastore)
+# security = Security(app, user_datastore, login_form=LoginForm)
+
+# a = LoginForm()
+
+# security = Security(app, user_datastore, login_form=ExtendedLoginForm)
 
 
 @app.before_first_request

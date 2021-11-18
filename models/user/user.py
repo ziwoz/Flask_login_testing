@@ -29,4 +29,10 @@ class User(db.Document, UserMixin):
 
 
 class ExtendedLoginForm(LoginForm):
-    email = StringField("Username or Email Address chomer than", [InputRequired()])
+    # email = StringField("Username or Email Address chomer than", [InputRequired()])
+    test = StringField("this is just a test")
+    # pass
+
+
+# a = ExtendedLoginForm()
+# print(a)

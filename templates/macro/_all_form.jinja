@@ -3,11 +3,17 @@
 
         <div class="form-group">
 
-            <label class="control-label">{{ field.label.text }}</label>
+            {% if not field.type in ['BooleanField', 'HiddenField', 'SubmitField'] %}
+                <label class="control-label">{{ field.label.text }}</label>
+            {% endif %}
 
             <div>
 
-            {% if field.type == 'FormField' %}
+            {% if field.type == 'BooleanField' %}
+                <label for="remember">{{ field.label.text }}</label> <input id="remember" name="remember" type="checkbox" value="y">
+
+            {% elif field.type == 'FormField' %}
+
                 {% for subfield in field %}
                     <div class='row' style="margin-left: 30px; margin-right: 30px">
 
@@ -31,6 +37,7 @@
                 {% for subfield in field %}
                     {{ form_field(subfield) }}
                 {% endfor %}
+
 
 
 
@@ -80,7 +87,7 @@
                     {{ form_field(field) }}
                 {% endif %}
             {% endfor %}
-                {{ form_submit(text='submit', form_name=form_name ) }}
+                <!-- {{ form_submit(text='submit', form_name=form_name ) }} -->
 
         </form>
     </div>

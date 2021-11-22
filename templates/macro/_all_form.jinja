@@ -8,6 +8,7 @@
             {% endif %}
 
             <div>
+            <!-- <h1>{{ field.type}}</h1> -->
 
             {% if field.type == 'BooleanField' %}
                 <label for="remember">{{ field.label.text }}</label> <input id="remember" name="remember" type="checkbox" value="y">
@@ -37,6 +38,9 @@
                 {% for subfield in field %}
                     {{ form_field(subfield) }}
                 {% endfor %}
+
+            {% elif field.type == 'SubmitField' %}
+                <button type="submit" class="btn btn-sm btn-secondary">Submit</button>
 
 
 
@@ -76,10 +80,8 @@
 {% endmacro %}
 
 {% macro form_macro(form, action, form_name, enctype=None) %}
-
     <div class="card shadow" style="border-radius: 15px" id="{{ form_name }}_form_div">
         <form action="{{ action }}" method="post" {% if enctype %} enctype="{{enctype}}" {% endif %}>
-
             {% for field in form %}
                 {% if field.type == 'CSRFTokenField'%}
                     {{ form.csrf_token }}
@@ -87,8 +89,6 @@
                     {{ form_field(field) }}
                 {% endif %}
             {% endfor %}
-                <!-- {{ form_submit(text='submit', form_name=form_name ) }} -->
-
         </form>
     </div>
 {% endmacro %}

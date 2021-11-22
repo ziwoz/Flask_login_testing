@@ -23,3 +23,13 @@ h2 {
     margin-top: 1px;
     padding-top: 1px;
 }
+
+#login_form_div {
+    margin-top: 200px;
+}
+
+.login_background {
+    background: url('../images/login_bg.jpg') no-repeat;
+    background-size: 100%;
+    height: 100vh;
+}

@@ -12,10 +12,13 @@
 </head>
 
 <body>
-    <div class="container">
-        {{ form_macro(login_user_form) }}
+    <div class="container-fluid login_background">
+        <section class="row justify-content-center">
+            <section class="col-lg-4 col-md-6 col-sm-8">
+                {{ form_macro(form=login_user_form, form_name='login') }}
+            </section>
+        </section>
     </div>
-
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
